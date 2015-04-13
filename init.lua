@@ -50,6 +50,7 @@ local insert = table.insert
 draw_shape = function(id, x, y, rot, posx, posy)
 	local d = shapes[id][rot]
 	local scr = {}
+	local ins = #scr
 
 	for i=1,4 do
 	   local tmp = { "image[",
@@ -57,7 +58,8 @@ draw_shape = function(id, x, y, rot, posx, posy)
 	   		 (d.y[i]+y)*sizey+posy, semi,
 	   		 size, comma, size, semi,
 	   		 colors[id], close }
-	   scr[#scr+1] = concat(tmp)
+		ins = ins + 1
+		scr[ins] = concat(tmp)
 	end
 
 	return concat(scr)
@@ -86,6 +88,7 @@ function step(pos, fields)
 
 	local function update_boardstring()
 		local scr = {}
+		local ins = #scr
 
 		for i, line in pairs(t.board) do
 			for _, tile in pairs(line) do
@@ -94,8 +97,9 @@ function step(pos, fields)
 			      i*sizey+boardy, semi,
 			      size, comma, size, semi,
 			      colors[tile[2] ], close }
-
-			   scr[#scr+1] = concat(tmp)
+				
+				ins = ins + 1
+				scr[ins] = concat(tmp)
 			end
 		end
 
