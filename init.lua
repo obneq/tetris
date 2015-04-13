@@ -66,16 +66,16 @@ end
 function step(pos, fields)
 	local meta = minetest.get_meta(pos)
 	local t = minetest.deserialize(meta:get_string("tetris"))
-	local nex = math.random(7)
 	
 	local function new_game(pos)
+		local nex = math.random(7)
 
 		t = {
 			board = {},
 			boardstring = "",
 			previewstring = draw_shape(nex, 0, 0, 1, 4, 1),
 			score = 0,
-			cur = nex,
+			cur = math.random(7),
 			nex = nex,
 			x=4, y=0, rot=1 
 		}
@@ -157,7 +157,7 @@ function step(pos, fields)
 			add()
 			check_lines()
 			update_boardstring()
-			t.cur, t.nex = t.nex, nex
+			t.cur, t.nex = t.nex, math.random(7)
 			t.x, t.y, t.rot = 4, 0, 1
 			t.previewstring = draw_shape(t.nex, 0, 0, 1, 4.1, 0.6)
 		else
