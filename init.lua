@@ -30,7 +30,7 @@ colors = { "cyan.png", "magenta.png", "red.png",
 
 background = "image[0,0;3.55,6.66;black.png]"
 buttons = "button[3,5;0.6,0.6;left;◄]"
-	.."button[3.6,5;0.6,0.6;rotateleft;R]"
+	.."button[3.6,5;0.6,0.6;rotateleft;L]"
 	.."button[4.2,5;0.6,0.6;drop;▼]"
 	.."button[4.8,5;0.6,0.6;rotateright;R]"
 	.."button[5.4,5;0.6,0.6;right;►]"
@@ -40,16 +40,24 @@ formsize = "size[5.9,5.7]"
 boardx, boardy = 0, 0
 sizex, sizey, size = 0.29, 0.29, 0.31
 
+
+local comma = ","
+local semi = ";"
+local close = "]"
+
+local concat = table.concat
+
 draw_shape = function(id, x, y, rot, posx, posy)
 	local d = shapes[id][rot]
 	local scr = {}
 
 	for i=1,4 do
-		local tmp = "image["..
-		(d.x[i]+x)*sizex+posx..","..
-		(d.y[i]+y)*sizey+posy..";"..
-		size..","..size..";"..colors[id].."]"
-		scr[#scr+1] = tmp -- faster than table.insert(scr, tmp)
+	   local tmp = { "image[",
+	   		 (d.x[i]+x)*sizex+posx, comma,
+	   		 (d.y[i]+y)*sizey+posy, semi,
+	   		 size, comma, size, semi,
+	   		 colors[id], close }
+	   scr[#scr+1] = table.concat(tmp)
 	end
 
 	return table.concat(scr)
@@ -81,10 +89,13 @@ function step(pos, fields)
 
 		for i, line in pairs(t.board) do
 			for _, tile in pairs(line) do
-				local tmp = "image["
-					..tile[1]*sizex+boardx..","..i*sizey+boardy..";"
-					..size..","..size..";"..colors[tile[2] ].."]"
-					scr[#scr+1] = tmp -- faster than table.insert(scr, tmp)
+			   local tmp = { "image[",
+			      tile[1]*sizex+boardx, comma,
+			      i*sizey+boardy, semi,
+			      size, comma, size, semi,
+			      colors[tile[2] ], close }
+
+			   scr[#scr+1] = table.concat(tmp)
 			end
 		end
 
@@ -202,8 +213,8 @@ function step(pos, fields)
 	local scr = { formsize, background, 
 		t.boardstring, t.previewstring,
 		draw_shape(t.cur, t.x, t.y, t.rot, boardx, boardy),
-		"label[3.8,0.1;Next...]" ..
-		"label[3.8,3;Score: ".. t.score .. "]", buttons }
+		"label[3.8,0.1;Next...]label[3.8,3;Score: ", 
+		t.score, close, buttons }
 
 		meta:set_string("formspec", table.concat(scr).. default.gui_bg .. default.gui_bg_img .. default.gui_slots)
 		meta:set_string("tetris", minetest.serialize(t))
