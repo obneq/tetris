@@ -121,7 +121,10 @@ function step(pos, fields)
 
 	local function check_lines()
 		for i, line in pairs(t.board) do
-			if #line >= 10 then scroll(i) end
+			if #line >= 10 then
+				scroll(i)
+				t.score = t.score + 10
+			end
 		end
 	end
 
