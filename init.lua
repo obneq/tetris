@@ -40,12 +40,12 @@ formsize = "size[5.9,5.7]"
 boardx, boardy = 0, 0
 sizex, sizey, size = 0.29, 0.29, 0.31
 
-
 local comma = ","
 local semi = ";"
 local close = "]"
 
 local concat = table.concat
+local insert = table.insert
 
 draw_shape = function(id, x, y, rot, posx, posy)
 	local d = shapes[id][rot]
@@ -57,25 +57,25 @@ draw_shape = function(id, x, y, rot, posx, posy)
 	   		 (d.y[i]+y)*sizey+posy, semi,
 	   		 size, comma, size, semi,
 	   		 colors[id], close }
-	   scr[#scr+1] = table.concat(tmp)
+	   scr[#scr+1] = concat(tmp)
 	end
 
-	return table.concat(scr)
+	return concat(scr)
 end
 
 function step(pos, fields)
 	local meta = minetest.get_meta(pos)
 	local t = minetest.deserialize(meta:get_string("tetris"))
+	local nex = math.random(7)
 	
 	local function new_game(pos)
-		local nex = math.random(7)
 
 		t = {
 			board = {},
 			boardstring = "",
 			previewstring = draw_shape(nex, 0, 0, 1, 4, 1),
 			score = 0,
-			cur = math.random(7),
+			cur = nex,
 			nex = nex,
 			x=4, y=0, rot=1 
 		}
@@ -95,16 +95,15 @@ function step(pos, fields)
 			      size, comma, size, semi,
 			      colors[tile[2] ], close }
 
-			   scr[#scr+1] = table.concat(tmp)
+			   scr[#scr+1] = concat(tmp)
 			end
 		end
 
-		t.boardstring = table.concat(scr)
+		t.boardstring = concat(scr)
 	end
 
 	local function add()
 		local d = shapes[t.cur][t.rot]
-		local insert = table.insert
 
 		for i=1,4 do
 			local l = d.y[i] + t.y
@@ -158,7 +157,7 @@ function step(pos, fields)
 			add()
 			check_lines()
 			update_boardstring()
-			t.cur, t.nex = t.nex, math.random(7)
+			t.cur, t.nex = t.nex, nex
 			t.x, t.y, t.rot = 4, 0, 1
 			t.previewstring = draw_shape(t.nex, 0, 0, 1, 4.1, 0.6)
 		else
@@ -191,7 +190,7 @@ function step(pos, fields)
 		end
 		if fields.drop then
 			t.score = t.score + 1
-			move(0, 1)
+			move(0, 3)
 		end
 		if fields.rotateright then
 			rotate(1)
@@ -219,7 +218,7 @@ function step(pos, fields)
 		"label[3.8,0.1;Next...]label[3.8,3;Score: ", 
 		t.score, close, buttons }
 
-		meta:set_string("formspec", table.concat(scr).. default.gui_bg .. default.gui_bg_img .. default.gui_slots)
+		meta:set_string("formspec", concat(scr).. default.gui_bg .. default.gui_bg_img .. default.gui_slots)
 		meta:set_string("tetris", minetest.serialize(t))
 
 	return run
