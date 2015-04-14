@@ -31,7 +31,7 @@ colors = { "cyan.png", "magenta.png", "red.png",
 background = "image[0,0;3.55,6.66;black.png]"
 buttons = "button[3,4.5;0.6,0.6;left;◄]"
 	.."button[3.6,4.5;0.6,0.6;rotateleft;L]"
-	.."button[4.2,4.5;0.6,0.6;down;▼]"
+	.."button[4.2,4.5;0.6,0.6;down;V]"
         .."button[4.2,5.3;0.6,0.6;drop;▼]"
 	.."button[4.8,4.5;0.6,0.6;rotateright;R]"
 	.."button[5.4,4.5;0.6,0.6;right;►]"
@@ -127,7 +127,7 @@ function step(pos, fields)
 		for i, line in pairs(t.board) do
 			if #line >= 10 then
 				scroll(i)
-				t.score = t.score + 10
+				t.score = t.score + 20
 			end
 		end
 	end
@@ -199,6 +199,7 @@ function step(pos, fields)
 		end
 		if fields.drop then
 		   while not stuck() do
+			  t.score = t.score + 2
 		      move(0, 1)
 		   end
 		   return tick()
