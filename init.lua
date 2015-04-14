@@ -202,7 +202,6 @@ function step(pos, fields)
 			  t.score = t.score + 2
 		      move(0, 1)
 		   end
-		   return tick()
 		end
 		if fields.rotateright then
 			rotate(1)
