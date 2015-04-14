@@ -29,12 +29,13 @@ colors = { "cyan.png", "magenta.png", "red.png",
           "blue.png", "green.png", "orange.png", "yellow.png" }
 
 background = "image[0,0;3.55,6.66;black.png]"
-buttons = "button[3,5;0.6,0.6;left;◄]"
-	.."button[3.6,5;0.6,0.6;rotateleft;L]"
-	.."button[4.2,5;0.6,0.6;drop;▼]"
-	.."button[4.8,5;0.6,0.6;rotateright;R]"
-	.."button[5.4,5;0.6,0.6;right;►]"
-	.."button[3.5,3.3;2,2;new;New Game]"
+buttons = "button[3,4.5;0.6,0.6;left;◄]"
+	.."button[3.6,4.5;0.6,0.6;rotateleft;L]"
+	.."button[4.2,4.5;0.6,0.6;down;▼]"
+        .."button[4.2,5.3;0.6,0.6;drop;▼]"
+	.."button[4.8,4.5;0.6,0.6;rotateright;R]"
+	.."button[5.4,4.5;0.6,0.6;right;►]"
+	.."button[3.5,3;2,2;new;New Game]"
 
 formsize = "size[5.9,5.7]"
 boardx, boardy = 0, 0
@@ -192,9 +193,15 @@ function step(pos, fields)
 		if fields.rotateleft then
 			rotate(-1)
 		end
-		if fields.drop then
+		if fields.down then
 			t.score = t.score + 1
-			move(0, 3)
+			move(0, 1)
+		end
+		if fields.drop then
+		   while not stuck() do
+		      move(0, 1)
+		   end
+		   return tick()
 		end
 		if fields.rotateright then
 			rotate(1)
@@ -219,7 +226,7 @@ function step(pos, fields)
 	local scr = { formsize, background, 
 		t.boardstring, t.previewstring,
 		draw_shape(t.cur, t.x, t.y, t.rot, boardx, boardy),
-		"label[3.8,0.1;Next...]label[3.8,3;Score: ", 
+		"label[3.8,0.1;Next...]label[3.8,2.7;Score: ", 
 		t.score, close, buttons }
 
 		meta:set_string("formspec", concat(scr).. default.gui_bg .. default.gui_bg_img .. default.gui_slots)
